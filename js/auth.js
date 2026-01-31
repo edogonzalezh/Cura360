@@ -136,23 +136,26 @@
    * @returns {Promise<string>}
    */
   async function _fetchRoleDirectly(userId, accessToken) {
-    const SUPABASE_URL = sb.supabaseUrl;
-    const SUPABASE_KEY = sb.supabaseKey;
-    
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=role`, {
+      const response = await fetch('https://ghzfnosevncivblpbful.supabase.co' + userId + '&select=role', {
         headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${accessToken}`,
+          'apikey': 'sb_publishable_zLely_K2mNNHQv82YeV40A_-Tj1XLDg',
+          'Authorization': 'Bearer ' + accessToken,
           'Content-Type': 'application/json'
         }
       });
       
+      if (!response.ok) {
+        console.error('[auth] _fetchRoleDirectly HTTP error:', response.status);
+        return 'patient';
+      }
+      
       const data = await response.json();
+      console.log('[auth] _fetchRoleDirectly response:', data);
       return (data && data[0] && data[0].role) ? data[0].role : 'patient';
     } catch (err) {
       console.error('[auth] _fetchRoleDirectly error:', err);
-      return 'patient'; // fallback
+      return 'patient';
     }
   }
 
